@@ -1,0 +1,1 @@
+Running Application from the terminal: Use mvn clean spring-boot:run
