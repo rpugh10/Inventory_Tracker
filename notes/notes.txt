@@ -1,4 +1,5 @@
 Running Application from the terminal: Use mvn clean spring-boot:run
+To stop the application press: Ctrl + C
 
 Connecting Database to application: 
 spring.datasource.url=jdbc:postgresql://localhost:5432/InventoryTracker

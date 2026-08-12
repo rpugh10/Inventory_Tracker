@@ -54,6 +54,7 @@ build/
 # Spring Boot secrets
 application-secret.properties
 application-secret.yml
+secrets.properties
 
 # ======================
 # Database files
