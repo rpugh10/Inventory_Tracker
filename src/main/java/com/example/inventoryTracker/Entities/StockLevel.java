@@ -10,6 +10,7 @@ import jakarta.persistence.Enumerated;
 
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,11 +25,13 @@ public class StockLevel {
     private StockLevelId id;
 
     @ManyToOne
-    @JoinColumn(name = "productID", foreignKey = @jakarta.persistence.ForeignKey(name = "productID"))
+    @MapsId("productId")
+    @JoinColumn(name = "productId", foreignKey = @jakarta.persistence.ForeignKey(name = "productId"))
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "locationID", foreignKey = @jakarta.persistence.ForeignKey(name = "locationID"))
+    @MapsId("locationId")
+    @JoinColumn(name = "locationId", foreignKey = @jakarta.persistence.ForeignKey(name = "locationId"))
     private Location location;
 
     @Column(name = "Quantity")
