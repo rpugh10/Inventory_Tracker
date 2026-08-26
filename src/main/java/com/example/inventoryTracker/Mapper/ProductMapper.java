@@ -9,4 +9,5 @@ import com.example.inventoryTracker.Entities.Product;
 public interface ProductMapper {
 
     ProductDTO toProductDTO(Product product);
+    Product toProduct(ProductDTO productDTO);
 }
