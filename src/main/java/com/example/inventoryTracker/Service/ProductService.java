@@ -45,18 +45,14 @@ public class ProductService {
 
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         Optional<Product> optionalProduct = productRepository.findById(id);
-        if (optionalProduct.isPresent()) {
-            Product existingProduct = optionalProduct.orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
-            existingProduct.setProductName(productDTO.getProductName());
-            existingProduct.setUnit(productDTO.getUnit());
-            existingProduct.setSku(productDTO.getSku());
-            existingProduct.setReorderLevel(productDTO.getReorderLevel());
-            existingProduct.setUnitCost(productDTO.getUnitCost());
-            Product updatedProduct = productRepository.save(existingProduct);
-            return productMapper.toProductDTO(updatedProduct);
-        } else {
-            throw new RuntimeException("Product not found with id: " + id);
-        }
+        Product existingProduct = optionalProduct.orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+        existingProduct.setProductName(productDTO.getProductName());
+        existingProduct.setUnit(productDTO.getUnit());
+        existingProduct.setSku(productDTO.getSku());
+        existingProduct.setReorderLevel(productDTO.getReorderLevel());
+        existingProduct.setUnitCost(productDTO.getUnitCost());
+        Product updatedProduct = productRepository.save(existingProduct);
+        return productMapper.toProductDTO(updatedProduct);
     }
 
     public void deleteProduct(Long id){
