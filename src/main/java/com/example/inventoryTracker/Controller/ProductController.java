@@ -2,6 +2,7 @@ package com.example.inventoryTracker.Controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import com.example.inventoryTracker.DTO.ProductDTO;
@@ -30,28 +31,29 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ProductDTO getProduct(@PathVariable Long id) {
-        return productService.findProductById(id);
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
+        return ResponseEntity.ok().body(productService.findProductById(id));
     }
 
     @GetMapping("/products")
-    public List<ProductDTO> getAllProducts() {
-        return productService.findAllProducts();
+    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+        return ResponseEntity.ok().body(productService.findAllProducts());
     }
 
     @PostMapping("/products")
-    public ProductDTO postMethodName(@RequestBody ProductDTO productDTO) {
-        return productService.saveProduct(productDTO);
+    public ResponseEntity<ProductDTO> postMethodName(@RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok().body(productService.saveProduct(productDTO));
     }
 
-    @PutMapping("/update/products/{id}")
-    public ProductDTO updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-        return productService.updateProduct(id, productDTO);
+    @PutMapping("/products/{id}")
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+        return ResponseEntity.ok().body(productService.updateProduct(id, productDTO));
     }
 
-    @DeleteMapping("/delete/products/{id}")
-    public void deleteProduct(@PathVariable Long id) {
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
     }
     
     
