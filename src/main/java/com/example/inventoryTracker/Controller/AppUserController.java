@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.inventoryTracker.DTO.AppUserRequestDTO.AppUserDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.AppUserRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.AppUserResponseDTO;
 import com.example.inventoryTracker.Service.AppUserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,22 +28,22 @@ public class AppUserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<AppUserDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<AppUserResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok().body(appUserService.getUserById(id));
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<AppUserDTO>> getAllUsers() {
+    public ResponseEntity<List<AppUserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok().body(appUserService.getAllUsers());
     }
 
     @PostMapping("/users")
-    public ResponseEntity<AppUserDTO> createUser(@RequestBody AppUserDTO entity) {
+    public ResponseEntity<AppUserResponseDTO> createUser(@RequestBody AppUserRequestDTO entity) {
         return ResponseEntity.ok().body(appUserService.createUser(entity));
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<AppUserDTO> updateUser(@PathVariable Long id, @RequestBody AppUserDTO entity) {
+    public ResponseEntity<AppUserResponseDTO> updateUser(@PathVariable Long id, @RequestBody AppUserRequestDTO entity) {
         return ResponseEntity.ok().body(appUserService.updateUser(id, entity));
     }
 

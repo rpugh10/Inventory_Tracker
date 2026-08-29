@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.inventoryTracker.DTO.LocationDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.LocationRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.LocationResponseDTO;
 import com.example.inventoryTracker.Service.LocationService;
 
 @RestController
@@ -24,22 +25,22 @@ public class LocationController {
     }
 
     @GetMapping("/locations/{id}")
-    public ResponseEntity<LocationDTO> getLocation(@PathVariable Long id) {
+    public ResponseEntity<LocationResponseDTO> getLocation(@PathVariable Long id) {
         return ResponseEntity.ok(locationService.findLocationById(id));
     }
 
     @GetMapping("/locations")
-    public ResponseEntity<List<LocationDTO>> getAllLocations() {
+    public ResponseEntity<List<LocationResponseDTO>> getAllLocations() {
         return ResponseEntity.ok(locationService.findAllLocations());
     }
 
     @PostMapping("/locations")
-    public ResponseEntity<LocationDTO> createLocation(@RequestBody LocationDTO locationDTO) {
+    public ResponseEntity<LocationResponseDTO> createLocation(@RequestBody LocationRequestDTO locationDTO) {
         return ResponseEntity.ok(locationService.saveLocation(locationDTO));
     }
 
     @PutMapping("/locations/{id}")
-    public ResponseEntity<LocationDTO> updateLocation(@PathVariable Long id, @RequestBody LocationDTO locationDTO) {
+    public ResponseEntity<LocationResponseDTO> updateLocation(@PathVariable Long id, @RequestBody LocationRequestDTO locationDTO) {
         return ResponseEntity.ok(locationService.updateLocation(id, locationDTO));
     }
 

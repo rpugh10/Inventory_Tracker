@@ -3,16 +3,17 @@ package com.example.inventoryTracker.Controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 
-import com.example.inventoryTracker.DTO.ProductDTO;
-import com.example.inventoryTracker.Entities.Product;
+
+import com.example.inventoryTracker.DTO.RequestDTOS.ProductRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.ProductResponseDTO;
+
 import com.example.inventoryTracker.Service.ProductService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,22 +32,22 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
+    public ResponseEntity<ProductResponseDTO> getProduct(@PathVariable Long id) {
         return ResponseEntity.ok().body(productService.findProductById(id));
     }
 
     @GetMapping("/products")
-    public ResponseEntity<List<ProductDTO>> getAllProducts() {
+    public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
         return ResponseEntity.ok().body(productService.findAllProducts());
     }
 
     @PostMapping("/products")
-    public ResponseEntity<ProductDTO> postMethodName(@RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductResponseDTO> postMethodName(@RequestBody ProductRequestDTO productDTO) {
         return ResponseEntity.ok().body(productService.saveProduct(productDTO));
     }
 
     @PutMapping("/products/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
+    public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDTO productDTO) {
         return ResponseEntity.ok().body(productService.updateProduct(id, productDTO));
     }
 

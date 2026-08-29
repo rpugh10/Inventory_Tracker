@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.inventoryTracker.DTO.StockLevelDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.StockLevelRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.StockLevelResponseDTO;
 import com.example.inventoryTracker.Service.StockLevelService;
 
 @RestController
@@ -24,23 +25,23 @@ public class StockLevelController {
     }
 
     @GetMapping("/stock-levels/{productId}/{locationId}")
-    public ResponseEntity<StockLevelDTO> getStockLevel(@PathVariable Long productId, @PathVariable Long locationId) {
+    public ResponseEntity<StockLevelResponseDTO> getStockLevel(@PathVariable Long productId, @PathVariable Long locationId) {
         return ResponseEntity.ok(stockLevelService.findStockLevelById(productId, locationId));
     }
 
     @GetMapping("/stock-levels")
-    public ResponseEntity<List<StockLevelDTO>> getAllStockLevels() {
+    public ResponseEntity<List<StockLevelResponseDTO>> getAllStockLevels() {
         return ResponseEntity.ok(stockLevelService.findAllStockLevels());
     }
 
     @PostMapping("/stock-levels")
-    public ResponseEntity<StockLevelDTO> createStockLevel(@RequestBody StockLevelDTO stockLevelDTO) {
+    public ResponseEntity<StockLevelResponseDTO> createStockLevel(@RequestBody StockLevelRequestDTO stockLevelDTO) {
         return ResponseEntity.ok(stockLevelService.saveStockLevel(stockLevelDTO));
     }
 
     @PutMapping("/stock-levels/{productId}/{locationId}")
-    public ResponseEntity<StockLevelDTO> updateStockLevel(@PathVariable Long productId, @PathVariable Long locationId,
-            @RequestBody StockLevelDTO stockLevelDTO) {
+    public ResponseEntity<StockLevelResponseDTO> updateStockLevel(@PathVariable Long productId, @PathVariable Long locationId,
+            @RequestBody StockLevelRequestDTO stockLevelDTO) {
         return ResponseEntity.ok(stockLevelService.updateStockLevel(productId, locationId, stockLevelDTO));
     }
 

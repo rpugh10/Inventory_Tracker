@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.inventoryTracker.DTO.InventoryTransactionDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.InventoryTransactionRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.InventoryTransactionResponseDTO;
 import com.example.inventoryTracker.Service.InventoryTransactionService;
 
 @RestController
@@ -24,24 +25,24 @@ public class InventoryTransactionController {
     }
 
     @GetMapping("/inventory-transactions/{id}")
-    public ResponseEntity<InventoryTransactionDTO> getInventoryTransaction(@PathVariable Long id) {
+    public ResponseEntity<InventoryTransactionResponseDTO> getInventoryTransaction(@PathVariable Long id) {
         return ResponseEntity.ok(inventoryTransactionService.findInventoryTransactionById(id));
     }
 
     @GetMapping("/inventory-transactions")
-    public ResponseEntity<List<InventoryTransactionDTO>> getAllInventoryTransactions() {
+    public ResponseEntity<List<InventoryTransactionResponseDTO>> getAllInventoryTransactions() {
         return ResponseEntity.ok(inventoryTransactionService.findAllInventoryTransactions());
     }
 
     @PostMapping("/inventory-transactions")
-    public ResponseEntity<InventoryTransactionDTO> createInventoryTransaction(
-            @RequestBody InventoryTransactionDTO inventoryTransactionDTO) {
+    public ResponseEntity<InventoryTransactionResponseDTO> createInventoryTransaction(
+            @RequestBody InventoryTransactionRequestDTO inventoryTransactionDTO) {
         return ResponseEntity.ok(inventoryTransactionService.saveInventoryTransaction(inventoryTransactionDTO));
     }
 
     @PutMapping("/inventory-transactions/{id}")
-    public ResponseEntity<InventoryTransactionDTO> updateInventoryTransaction(@PathVariable Long id,
-            @RequestBody InventoryTransactionDTO inventoryTransactionDTO) {
+    public ResponseEntity<InventoryTransactionResponseDTO> updateInventoryTransaction(@PathVariable Long id,
+            @RequestBody InventoryTransactionRequestDTO inventoryTransactionDTO) {
         return ResponseEntity.ok(inventoryTransactionService.updateInventoryTransaction(id, inventoryTransactionDTO));
     }
 
