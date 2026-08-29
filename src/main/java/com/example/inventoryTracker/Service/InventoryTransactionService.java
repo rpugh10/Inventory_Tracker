@@ -1,10 +1,13 @@
 package com.example.inventoryTracker.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.inventoryTracker.DTO.InventoryTransactionDTO;
+
+import com.example.inventoryTracker.DTO.RequestDTOS.InventoryTransactionRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.InventoryTransactionResponseDTO;
 import com.example.inventoryTracker.Entities.AppUser;
 import com.example.inventoryTracker.Entities.InventoryTransaction;
 import com.example.inventoryTracker.Entities.Location;
@@ -15,8 +18,9 @@ import com.example.inventoryTracker.Repository.AppUserRepository;
 import com.example.inventoryTracker.Repository.InventoryTransactionRepository;
 import com.example.inventoryTracker.Repository.LocationRepository;
 import com.example.inventoryTracker.Repository.ProductRepository;
+import com.example.inventoryTracker.Repository.SupplierRepository;
 
-import jakarta.persistence.EntityManager;
+
 
 @Service
 public class InventoryTransactionService {
@@ -26,43 +30,45 @@ public class InventoryTransactionService {
     private final AppUserRepository appUserRepository;
     private final ProductRepository productRepository;
     private final LocationRepository locationRepository;
-    private final EntityManager entityManager;
+    private final SupplierRepository supplierRepository;
 
     public InventoryTransactionService(InventoryTransactionRepository inventoryTransactionRepository,
             InventoryTransactionMapper inventoryTransactionMapper, AppUserRepository appUserRepository,
-            ProductRepository productRepository, LocationRepository locationRepository, EntityManager entityManager) {
+            ProductRepository productRepository, LocationRepository locationRepository, SupplierRepository supplierRepository) {
         this.inventoryTransactionRepository = inventoryTransactionRepository;
         this.inventoryTransactionMapper = inventoryTransactionMapper;
         this.appUserRepository = appUserRepository;
         this.productRepository = productRepository;
         this.locationRepository = locationRepository;
-        this.entityManager = entityManager;
+        this.supplierRepository = supplierRepository;
     }
 
-    public InventoryTransactionDTO findInventoryTransactionById(Long id) {
-        return inventoryTransactionRepository.findById(id).map(inventoryTransactionMapper::toInventoryTransactionDTO)
+
+    public InventoryTransactionResponseDTO findInventoryTransactionById(Long id) {
+        return inventoryTransactionRepository.findById(id).map(inventoryTransactionMapper::toInventoryTransactionResponseDTO)
                 .orElseThrow(() -> new RuntimeException("Inventory transaction not found with id: " + id));
     }
 
-    public List<InventoryTransactionDTO> findAllInventoryTransactions() {
-        return inventoryTransactionRepository.findAll().stream().map(inventoryTransactionMapper::toInventoryTransactionDTO).toList();
+
+    public List<InventoryTransactionResponseDTO> findAllInventoryTransactions() {
+        return inventoryTransactionRepository.findAll().stream().map(inventoryTransactionMapper::toInventoryTransactionResponseDTO).toList();
     }
 
-    public InventoryTransactionDTO saveInventoryTransaction(InventoryTransactionDTO inventoryTransactionDTO) {
+    public InventoryTransactionResponseDTO saveInventoryTransaction(InventoryTransactionRequestDTO inventoryTransactionDTO) {
         InventoryTransaction transaction = inventoryTransactionMapper.toInventoryTransaction(inventoryTransactionDTO);
         setRelationships(transaction, inventoryTransactionDTO);
-        return inventoryTransactionMapper.toInventoryTransactionDTO(inventoryTransactionRepository.save(transaction));
+        transaction.setTransactionDate(LocalDateTime.now());
+        return inventoryTransactionMapper.toInventoryTransactionResponseDTO(inventoryTransactionRepository.save(transaction));
     }
 
-    public InventoryTransactionDTO updateInventoryTransaction(Long id, InventoryTransactionDTO inventoryTransactionDTO) {
+    public InventoryTransactionResponseDTO updateInventoryTransaction(Long id, InventoryTransactionRequestDTO inventoryTransactionDTO) {
         InventoryTransaction transaction = inventoryTransactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Inventory transaction not found with id: " + id));
         transaction.setQuantity(inventoryTransactionDTO.getQuantity());
         transaction.setNote(inventoryTransactionDTO.getNote());
-        transaction.setTransactionDate(inventoryTransactionDTO.getTransactionDate());
         transaction.setTransactionType(inventoryTransactionDTO.getTransactionTypeEnum());
         setRelationships(transaction, inventoryTransactionDTO);
-        return inventoryTransactionMapper.toInventoryTransactionDTO(inventoryTransactionRepository.save(transaction));
+        return inventoryTransactionMapper.toInventoryTransactionResponseDTO(inventoryTransactionRepository.save(transaction));
     }
 
     public void deleteInventoryTransaction(Long id) {
@@ -72,14 +78,15 @@ public class InventoryTransactionService {
         inventoryTransactionRepository.deleteById(id);
     }
 
-    private void setRelationships(InventoryTransaction transaction, InventoryTransactionDTO dto) {
+    private void setRelationships(InventoryTransaction transaction, InventoryTransactionRequestDTO dto) {
         AppUser user = appUserRepository.findById(dto.getAppUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getAppUserId()));
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + dto.getProductId()));
         Location location = locationRepository.findById(dto.getLocationId())
                 .orElseThrow(() -> new RuntimeException("Location not found with id: " + dto.getLocationId()));
-        Supplier supplier = entityManager.find(Supplier.class, dto.getSupplierId());
+        Supplier supplier = supplierRepository.findById(dto.getSupplierId())
+                .orElseThrow(() -> new RuntimeException("Supplier not found with id: " + dto.getSupplierId()));
         if (supplier == null) {
             throw new RuntimeException("Supplier not found with id: " + dto.getSupplierId());
         }

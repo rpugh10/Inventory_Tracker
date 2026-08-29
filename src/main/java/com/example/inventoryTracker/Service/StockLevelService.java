@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.inventoryTracker.DTO.StockLevelDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.StockLevelRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.StockLevelResponseDTO;
 import com.example.inventoryTracker.Entities.Location;
 import com.example.inventoryTracker.Entities.Product;
 import com.example.inventoryTracker.Entities.StockLevel;
@@ -30,22 +31,22 @@ public class StockLevelService {
         this.locationRepository = locationRepository;
     }
 
-    public StockLevelDTO findStockLevelById(Long productId, Long locationId) {
+    public StockLevelResponseDTO findStockLevelById(Long productId, Long locationId) {
         return stockLevelRepository.findById(new StockLevelId(productId, locationId)).map(stockLevelMapper::toStockLevelDTO)
                 .orElseThrow(() -> new RuntimeException("Stock level not found"));
     }
 
-    public List<StockLevelDTO> findAllStockLevels() {
+    public List<StockLevelResponseDTO> findAllStockLevels() {
         return stockLevelRepository.findAll().stream().map(stockLevelMapper::toStockLevelDTO).toList();
     }
 
-    public StockLevelDTO saveStockLevel(StockLevelDTO stockLevelDTO) {
+    public StockLevelResponseDTO saveStockLevel(StockLevelRequestDTO stockLevelDTO) {
         StockLevel stockLevel = stockLevelMapper.toStockLevel(stockLevelDTO);
         setRelationshipsAndId(stockLevel, stockLevelDTO);
         return stockLevelMapper.toStockLevelDTO(stockLevelRepository.save(stockLevel));
     }
 
-    public StockLevelDTO updateStockLevel(Long productId, Long locationId, StockLevelDTO stockLevelDTO) {
+    public StockLevelResponseDTO updateStockLevel(Long productId, Long locationId, StockLevelRequestDTO stockLevelDTO) {
         StockLevel stockLevel = stockLevelRepository.findById(new StockLevelId(productId, locationId))
                 .orElseThrow(() -> new RuntimeException("Stock level not found"));
         stockLevel.setQuantity(stockLevelDTO.getQuantity());
@@ -61,7 +62,7 @@ public class StockLevelService {
         stockLevelRepository.deleteById(id);
     }
 
-    private void setRelationshipsAndId(StockLevel stockLevel, StockLevelDTO dto) {
+    private void setRelationshipsAndId(StockLevel stockLevel, StockLevelRequestDTO dto) {
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + dto.getProductId()));
         Location location = locationRepository.findById(dto.getLocationId())

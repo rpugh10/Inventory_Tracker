@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.inventoryTracker.DTO.LocationDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.LocationRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.LocationResponseDTO;
 import com.example.inventoryTracker.Entities.Location;
 import com.example.inventoryTracker.Mapper.LocationMapper;
 import com.example.inventoryTracker.Repository.LocationRepository;
@@ -20,22 +21,22 @@ public class LocationService {
         this.locationMapper = locationMapper;
     }
 
-    public LocationDTO findLocationById(Long id) {
+    public LocationResponseDTO findLocationById(Long id) {
         return locationRepository.findById(id)
                 .map(locationMapper::toLocationDTO)
                 .orElseThrow(() -> new RuntimeException("Location not found with id: " + id));
     }
 
-    public List<LocationDTO> findAllLocations() {
+    public List<LocationResponseDTO> findAllLocations() {
         return locationRepository.findAll().stream().map(locationMapper::toLocationDTO).toList();
     }
 
-    public LocationDTO saveLocation(LocationDTO locationDTO) {
+    public LocationResponseDTO saveLocation(LocationRequestDTO locationDTO) {
         Location savedLocation = locationRepository.save(locationMapper.toLocation(locationDTO));
         return locationMapper.toLocationDTO(savedLocation);
     }
 
-    public LocationDTO updateLocation(Long id, LocationDTO locationDTO) {
+    public LocationResponseDTO updateLocation(Long id, LocationRequestDTO locationDTO) {
         Location location = locationRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Location not found with id: " + id));
         location.setLocationName(locationDTO.getLocationName());

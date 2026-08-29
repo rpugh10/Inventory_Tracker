@@ -6,7 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.example.inventoryTracker.DTO.ProductDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.ProductRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.ProductResponseDTO;
 import com.example.inventoryTracker.Entities.Product;
 import com.example.inventoryTracker.Mapper.ProductMapper;
 import com.example.inventoryTracker.Repository.ProductRepository;
@@ -22,7 +23,7 @@ public class ProductService {
         this.productMapper = productMapper;
     }
 
-    public ProductDTO findProductById(Long id) {
+    public ProductResponseDTO findProductById(Long id) {
         return productRepository.findById(id) //Don't need to use .stream() because .findById returns an optional.
                 .map(productMapper::toProductDTO)
                 .orElseGet(() -> {
@@ -30,20 +31,20 @@ public class ProductService {
                 });
     }
 
-    public List<ProductDTO> findAllProducts() {
+    public List<ProductResponseDTO> findAllProducts() {
         return productRepository.findAll().stream() //Have to use .stream() because .findAll() returns a List
                 .map(productMapper::toProductDTO)
                 .collect(Collectors.toList());
     }
 
-    public ProductDTO saveProduct(ProductDTO productDTO) {
+    public ProductResponseDTO saveProduct(ProductRequestDTO productDTO) {
         Product product = productMapper.toProduct(productDTO);
         Product savedProduct = productRepository.save(product);
         return productMapper.toProductDTO(savedProduct);
         
     }
 
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
+    public ProductResponseDTO updateProduct(Long id, ProductRequestDTO productDTO) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         Product existingProduct = optionalProduct.orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
         existingProduct.setProductName(productDTO.getProductName());
