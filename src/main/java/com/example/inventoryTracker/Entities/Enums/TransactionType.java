@@ -1,4 +1,4 @@
-package com.example.inventoryTracker.Entities;
+package com.example.inventoryTracker.Entities.Enums;
 
 public enum TransactionType {
     STOCK_IN,

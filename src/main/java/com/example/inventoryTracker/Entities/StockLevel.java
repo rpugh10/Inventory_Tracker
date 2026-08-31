@@ -2,6 +2,8 @@ package com.example.inventoryTracker.Entities;
 
 
 
+import com.example.inventoryTracker.Entities.Enums.TransactionType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;

@@ -2,6 +2,8 @@ package com.example.inventoryTracker.Entities;
 
 import java.time.LocalDateTime;
 
+import com.example.inventoryTracker.Entities.Enums.TransactionType;
+
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
