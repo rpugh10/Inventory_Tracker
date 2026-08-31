@@ -1,0 +1,15 @@
+Starting this document later
+
+August 30th 2026
+.Implemented UserDetails in the AppUser Entity and overrode the necessary methods 
+.Created AppUserDetailsService that implements UserDetailsService to allow Spring Security to find the user 
+.Created a PasswordEncoder Bean in SecurityConfig and injected it into the AppUserService
+.Created a Role Enum to restrict the types of roles users can be 
+.Created PasswordRequestDTO and UpdateRole DTO. The PasswordRequestDTO will allow users to update just their password.
+The UpdateRole needs to just be for Admins to update user roles
+.Created custom exceptions. Created UserNotFound and DuplicateUser and let a GlobalExceptionHandler return the correct HTTP Status
+.Added custom queries to the AppUserRepository. Added findByUsername, findByEmail, existsByUsernameAndIdNot and the same for email.
+These queries will allow me to check if a username or email already exists in the database
+.Updated the createUser and updateUser methods in the AppUserService to hash passwords, check if username 
+and emails already exist and throw my custom exceptions. 
+.Updated the AppUserController by adding more endpoints to update the password and roles.

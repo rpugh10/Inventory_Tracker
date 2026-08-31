@@ -28,3 +28,11 @@ orElseGet: Uses a lambda that runs later IF the optional is empty.
 productMapper is the object the holds the tool you want to use. :: Tells Java to look inside that object for the tool. toProductDTO the name of the method you want to run.
 Null Safe
 The toProductDTO comes from the Mapper Interface
+
+8. Restricting endpoints
+Using @PreAuthorize("hasRole('ADMIN')") on a controller method means Only an authenticated user whose Role is ADMIN can execute this method.
+To enable @PreAuthorize we need to add @EnableMethodSecurity in the security configuration. 
+This tells Spring Security to pay attention to annotations such as @PreAuthorize
+
+9. @Version
+This annotation tells hibernate to track row modifications. It prevents two processes from overwriting each others data simultaneously without warning.
