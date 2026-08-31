@@ -20,12 +20,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import jakarta.persistence.Version;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class AppUser implements UserDetails {
+
+    @Version
+    private Long version;
 
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
