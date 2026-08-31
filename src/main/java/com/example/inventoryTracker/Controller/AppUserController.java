@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.inventoryTracker.DTO.RequestDTOS.AppUserRequestDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.PasswordRequestDTO;
 import com.example.inventoryTracker.DTO.ResponseDTOS.AppUserResponseDTO;
 import com.example.inventoryTracker.Service.AppUserService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,8 +44,13 @@ public class AppUserController {
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<AppUserResponseDTO> updateUser(@PathVariable Long id, @RequestBody AppUserRequestDTO entity) {
-        return ResponseEntity.ok().body(appUserService.updateUser(id, entity));
+    public ResponseEntity<AppUserResponseDTO> updateUserInformation(@PathVariable Long id, @RequestBody AppUserRequestDTO entity) {
+        return ResponseEntity.ok().body(appUserService.updateUserInformation(id, entity));
+    }
+
+    @PutMapping("/users/{id}/password")
+    public ResponseEntity<AppUserResponseDTO> updatePassword(@PathVariable Long id, @RequestBody PasswordRequestDTO passwordRequestDTO) {
+        return ResponseEntity.ok().body(appUserService.updatePassword(id, passwordRequestDTO.getNewPassword()));
     }
 
     @DeleteMapping("/users/{id}")
