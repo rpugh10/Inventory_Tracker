@@ -1,4 +1,4 @@
-package com.example.inventoryTracker.DTO.RequestDTOS;
+package com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS;
 
 import lombok.Data;
 

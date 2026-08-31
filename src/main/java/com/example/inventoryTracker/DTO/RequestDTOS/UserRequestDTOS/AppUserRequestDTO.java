@@ -1,6 +1,5 @@
-package com.example.inventoryTracker.DTO.RequestDTOS;
+package com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS;
 
-import com.example.inventoryTracker.Entities.Enums.Roles;
 
 import lombok.Data;
 
@@ -10,5 +9,5 @@ public class AppUserRequestDTO {
     private String username;
     private String password;
     private String email;
-    private Roles role;
+    
 }
