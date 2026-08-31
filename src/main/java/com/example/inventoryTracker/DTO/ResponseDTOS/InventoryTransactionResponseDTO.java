@@ -1,6 +1,6 @@
 package com.example.inventoryTracker.DTO.ResponseDTOS;
 
-import com.example.inventoryTracker.Entities.TransactionType;
+import com.example.inventoryTracker.Entities.Enums.TransactionType;
 
 import lombok.Data;
 
