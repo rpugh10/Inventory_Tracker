@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import com.example.inventoryTracker.Repository.AppUserRepository;
 
 @Service
-public class CustomerUserDetailsService implements UserDetailsService {
+public class AppUserDetailsService implements UserDetailsService {
 
     private final AppUserRepository userRepository;
 
-    public CustomerUserDetailsService(AppUserRepository userRepository) {
+    public AppUserDetailsService(AppUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
