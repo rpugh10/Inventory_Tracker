@@ -3,7 +3,7 @@ package com.example.inventoryTracker.Mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.example.inventoryTracker.DTO.RequestDTOS.AppUserRequestDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.AppUserRequestDTO;
 import com.example.inventoryTracker.DTO.ResponseDTOS.AppUserResponseDTO;
 import com.example.inventoryTracker.Entities.AppUser;
 
