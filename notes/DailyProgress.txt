@@ -13,3 +13,8 @@ These queries will allow me to check if a username or email already exists in th
 .Updated the createUser and updateUser methods in the AppUserService to hash passwords, check if username 
 and emails already exist and throw my custom exceptions. 
 .Updated the AppUserController by adding more endpoints to update the password and roles.
+WHATS NEXT
+.Tomorrow we need to Connect AppUserDetailsService to Spring Security
+.Configure my login and Authentication 
+.Protect endpoints based on roles.
+.Test the AppUserController endpoints once these are all complete.
