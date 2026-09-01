@@ -14,7 +14,20 @@ These queries will allow me to check if a username or email already exists in th
 and emails already exist and throw my custom exceptions. 
 .Updated the AppUserController by adding more endpoints to update the password and roles.
 WHATS NEXT
-.Tomorrow we need to Connect AppUserDetailsService to Spring Security
+.Tomorrow we need to Connect AppUserDetailsService to Spring Security (done)
 .Configure my login and Authentication 
 .Protect endpoints based on roles.
 .Test the AppUserController endpoints once these are all complete.
+
+
+August 31st 2026
+.Created a JWTUtility class
+.Created my encoded JWT secret and stored it in secrets.properties
+.Used jwt.secret = ${JWT_SECRET} instead of typing the secret in the application.properties
+.In my JWTUtility class injected that secret using @Value(("${jwt.secret}")) and storing it in a storing
+WHATS NEXT
+.Generate a token
+.Set an expiration 
+.Add role into the JWT 
+.Figure out how to validate the token
+.Extract claims to figure out who this token is for
