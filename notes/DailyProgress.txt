@@ -26,8 +26,14 @@ August 31st 2026
 .Used jwt.secret = ${JWT_SECRET} instead of typing the secret in the application.properties
 .In my JWTUtility class injected that secret using @Value(("${jwt.secret}")) and storing it in a storing
 WHATS NEXT
-.Generate a token
-.Set an expiration 
-.Add role into the JWT 
-.Figure out how to validate the token
-.Extract claims to figure out who this token is for
+.Generate a token (Done)
+.Set an expiration (Done)
+.Add role into the JWT (Done)
+.Figure out how to validate the token (Done)
+.Extract claims to figure out who this token is for (Done)
+
+September 2nd 2026
+.Implemented getUsername(), generateToken(), and validateToken() methods in the JWT Utility class.
+WHATS NEXT
+.Connect the JWTUtility class to the login/Authentication endpoint.
+.Connect the JWTUtility to every future request
