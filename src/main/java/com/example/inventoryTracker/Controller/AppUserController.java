@@ -14,6 +14,8 @@ import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.PasswordRequ
 import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.UpdateRole;
 import com.example.inventoryTracker.DTO.ResponseDTOS.AppUserResponseDTO;
 import com.example.inventoryTracker.Service.AppUserService;
+
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -40,10 +42,11 @@ public class AppUserController {
         return ResponseEntity.ok().body(appUserService.getAllUsers());
     }
 
-    @PostMapping("/users")
+    @PostMapping("/register")
     public ResponseEntity<AppUserResponseDTO> createUser(@RequestBody AppUserRequestDTO entity) {
         return ResponseEntity.ok().body(appUserService.createUser(entity));
     }
+    
 
     @PutMapping("/users/{id}")
     public ResponseEntity<AppUserResponseDTO> updateUserInformation(@PathVariable Long id, @RequestBody AppUserRequestDTO entity) {
