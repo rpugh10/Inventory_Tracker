@@ -35,5 +35,14 @@ WHATS NEXT
 September 2nd 2026
 .Implemented getUsername(), generateToken(), and validateToken() methods in the JWT Utility class.
 WHATS NEXT
-.Connect the JWTUtility class to the login/Authentication endpoint.
-.Connect the JWTUtility to every future request
+.Connect the JWTUtility class to the login/Authentication endpoint.(Done)
+.Connect the JWTUtility to every future request(Done)
+
+September 4th 2026
+.Created a separate controller for logins
+.Created a login DTO that requests only username and password
+.Add JwtAuthenticationFilter class that intercepts requests before they reach the controller
+.Created a AuthenticationManager bean in the SecurityConfig class and injected it into my AuthenticationController
+WHATS NEXT
+.Need to figure out how to generate a token from a successful Authentication result rather than from the input request
+.Test the endpoints once this error is dealt with
