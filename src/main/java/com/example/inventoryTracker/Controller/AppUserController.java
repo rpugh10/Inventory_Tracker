@@ -4,17 +4,21 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.UpdateUserDTO;
 import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.AppUserRequestDTO;
 import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.PasswordRequestDTO;
 import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.UpdateRole;
 import com.example.inventoryTracker.DTO.ResponseDTOS.AppUserResponseDTO;
 import com.example.inventoryTracker.Service.AppUserService;
+import com.example.inventoryTracker.Entities.AppUser;
 
+import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,29 +36,39 @@ public class AppUserController {
         this.appUserService = appUserService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users/{id}")
     public ResponseEntity<AppUserResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok().body(appUserService.getUserById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public ResponseEntity<List<AppUserResponseDTO>> getAllUsers() {
         return ResponseEntity.ok().body(appUserService.getAllUsers());
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AppUserResponseDTO> createUser(@RequestBody AppUserRequestDTO entity) {
+    public ResponseEntity<AppUserResponseDTO> createUser(@Valid @RequestBody AppUserRequestDTO entity) {
         return ResponseEntity.ok().body(appUserService.createUser(entity));
     }
     
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<AppUserResponseDTO> updateUserInformation(@PathVariable Long id, @RequestBody AppUserRequestDTO entity) {
+    public ResponseEntity<AppUserResponseDTO> updateUserInformation(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO entity, Authentication authentication) {
+        
+        // Proceed with updating the user information
+       AppUser user = (AppUser) authentication.getPrincipal();
+       
+       if(!user.getId().equals(id)){
+            return ResponseEntity.status(403).build(); // Return 403 Forbidden if the authenticated user is not the same as the user being updated
+       }
+       
         return ResponseEntity.ok().body(appUserService.updateUserInformation(id, entity));
     }
 
     @PutMapping("/users/{id}/password")
-    public ResponseEntity<AppUserResponseDTO> updatePassword(@PathVariable Long id, @RequestBody PasswordRequestDTO passwordRequestDTO) {
+    public ResponseEntity<AppUserResponseDTO> updatePassword(@PathVariable Long id, @Valid  @RequestBody PasswordRequestDTO passwordRequestDTO) {
         return ResponseEntity.ok().body(appUserService.updatePassword(id, passwordRequestDTO.getNewPassword()));
     }
 
@@ -64,6 +78,7 @@ public class AppUserController {
         return ResponseEntity.ok().body(appUserService.updateRole(id, updateRole.getRole()));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
         appUserService.deleteUser(id);
