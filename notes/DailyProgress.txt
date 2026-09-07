@@ -44,5 +44,14 @@ September 4th 2026
 .Add JwtAuthenticationFilter class that intercepts requests before they reach the controller
 .Created a AuthenticationManager bean in the SecurityConfig class and injected it into my AuthenticationController
 WHATS NEXT
-.Need to figure out how to generate a token from a successful Authentication result rather than from the input request
+.Need to figure out how to generate a token from a successful Authentication result rather than from the input request (Done)
 .Test the endpoints once this error is dealt with
+
+September 7th 2026
+.Created an Update User DTO with the fields username and email so users can update those
+.Created the endpoint int AppUser controller
+.Removed Delete requiring admin role in Security Config and instead used PreAuthorize in the controller
+WHATS NEXT
+.Need to figure out how to create the first Admin
+.Need to only allow users to update their own fields and not other users
+.Define what the ADMINS can modify
