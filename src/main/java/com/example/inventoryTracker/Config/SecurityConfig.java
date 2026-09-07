@@ -1,7 +1,6 @@
 package com.example.inventoryTracker.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -29,10 +28,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
          http
             .csrf(csrf -> csrf.disable()) // Disable CSRF protection
+            .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS)) // Set session management to stateless
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add the JWT authentication filter before the UsernamePasswordAuthenticationFilter
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/register").permitAll() // Allow unauthenticated access to the login and register endpoints
-                .requestMatchers(HttpMethod.DELETE,"/users/**").hasRole("ADMIN") // Allow only users with the ADMIN role to access endpoints under /users/**
+                .requestMatchers("/users/**").hasRole("ADMIN") // Allow only users with the ADMIN role to access endpoints under /users/**
                 .anyRequest().authenticated()                           
             );
         return http.build();
