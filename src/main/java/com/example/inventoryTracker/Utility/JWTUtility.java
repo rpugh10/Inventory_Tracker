@@ -12,10 +12,9 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
+
 
 @Component
-@RequiredArgsConstructor
 public class JWTUtility {
 
     @Value("${jwt.secret}")
@@ -38,24 +37,6 @@ public class JWTUtility {
                 .expiration(java.util.Date.from(now.plusSeconds(3600))) // Token valid for 1 hour
                 .signWith(key) // Signs the token with the secret key
                 .compact(); // Builds the token and returns it as a string
-    }
-
-    /**
-     * Extracts the username from the given JWT token.
-     *
-     * @param token the JWT token
-     * @return the username extracted from the token
-     */
-    public String extractUsername(String token){
-        SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-
-        Claims claims = Jwts.parser() // I want to read and process the JWT token
-                .verifyWith(key) // Verifies the token signature with the secret key
-                .build() // Builds the JWT parser
-                .parseSignedClaims(token) // Parses the token and retrieves the claims
-                .getPayload(); // Retrieves the payload (claims) from the parsed token
-
-        return claims.getSubject(); // Returns the subject (username) from the token claims
     }
 
     /**
