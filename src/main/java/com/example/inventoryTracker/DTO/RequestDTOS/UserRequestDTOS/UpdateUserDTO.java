@@ -1,21 +1,16 @@
 package com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS;
 
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-@Data
-public class AppUserRequestDTO {
+@Data 
+public class UpdateUserDTO {
 
-    @NotBlank
+    @NotBlank 
     private String username;
-
-    @NotBlank
-    private String password;
-
-    @NotBlank
+   
+    @NotBlank 
     @Email 
     private String email;
-    
 }
