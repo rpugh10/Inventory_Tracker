@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.UpdateUserDTO;
 import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.AppUserRequestDTO;
 import com.example.inventoryTracker.DTO.ResponseDTOS.AppUserResponseDTO;
 import com.example.inventoryTracker.Entities.AppUser;
@@ -55,7 +56,7 @@ public class AppUserService {
         return appUserMapper.toAppUserDTO(savedUser);
     }
 
-    public AppUserResponseDTO updateUserInformation(Long id, AppUserRequestDTO userDTO){
+    public AppUserResponseDTO updateUserInformation(Long id, UpdateUserDTO userDTO){
         Optional<AppUser> user = appUserRepository.findById(id); //Here we have to do Optional<AppUser> because findById() returns that.
         AppUser newUser = user.orElseThrow(() -> new UserNotFoundException("User not found"));
         if(appUserRepository.existsByUsernameAndIdNot(userDTO.getUsername(), id)){
