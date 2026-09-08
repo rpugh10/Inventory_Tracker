@@ -59,6 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter{
         } catch (Exception e) {
             // Handle any exceptions that may occur during token extraction or validation
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or expired token");
+            return; // Stop further processing of the request if the token is invalid or expired
         }
         filterChain.doFilter(request, response); // Continue the filter chain to allow the request to proceed to the next filter or endpoint
     }
