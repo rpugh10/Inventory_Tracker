@@ -52,6 +52,16 @@ September 7th 2026
 .Created the endpoint int AppUser controller
 .Removed Delete requiring admin role in Security Config and instead used PreAuthorize in the controller
 WHATS NEXT
-.Need to figure out how to create the first Admin
-.Need to only allow users to update their own fields and not other users
-.Define what the ADMINS can modify
+.Need to figure out how to create the first Admin (Done)
+.Need to only allow users to update their own fields and not other users (Done)
+.Define what the ADMINS can modify (Done)
+
+September 8th 2026
+.Added an AGENTS.md file to ensure that my project is on the right track
+.Added Swagger to POM file and allowed it's endpoints to be permitted in the SecurityConfig
+.Created a DataInitializer class to create an Admin account if theres not one created already
+.Removed the Role USER so now new accounts automatically default to STAFF
+.Tested all endpoints from USER and STAFF views 
+WHATS NEXT
+.Draw an endpoint to role table diagram
+.Start milestone 3
