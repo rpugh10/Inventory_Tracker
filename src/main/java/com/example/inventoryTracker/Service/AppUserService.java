@@ -51,7 +51,7 @@ public class AppUserService {
             throw new DuplicateUser("Email already exists");
         }
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.setRole(Roles.USER); // Set default role to USER
+        user.setRole(Roles.STAFF); // Set default role to STAFF
         AppUser savedUser = appUserRepository.save(user);
         return appUserMapper.toAppUserDTO(savedUser);
     }
