@@ -31,8 +31,13 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS)) // Set session management to stateless
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add the JWT authentication filter before the UsernamePasswordAuthenticationFilter
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/register").permitAll() // Allow unauthenticated access to the login and register endpoints
-                .requestMatchers("/users/**").hasRole("ADMIN") // Allow only users with the ADMIN role to access endpoints under /users/**
+                .requestMatchers(
+                "/auth/login", 
+                "/register",
+                "/swagger-ui/**",
+                "/v3/api-docs/**").permitAll() // Allow unauthenticated access to the login and register endpoints
+                .requestMatchers("/products/**").hasRole("ADMIN") // Require ADMIN role for /products/** endpoints
+                .requestMatchers("/inventory-transactions/**").hasAnyRole("ADMIN", "STAFF") 
                 .anyRequest().authenticated()                           
             );
         return http.build();
