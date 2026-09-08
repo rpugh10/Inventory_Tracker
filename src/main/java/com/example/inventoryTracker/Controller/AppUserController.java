@@ -16,6 +16,9 @@ import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.PasswordRequ
 import com.example.inventoryTracker.DTO.RequestDTOS.UserRequestDTOS.UpdateRole;
 import com.example.inventoryTracker.DTO.ResponseDTOS.AppUserResponseDTO;
 import com.example.inventoryTracker.Service.AppUserService;
+
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import com.example.inventoryTracker.Entities.AppUser;
 
 import jakarta.validation.Valid;
@@ -36,12 +39,14 @@ public class AppUserController {
         this.appUserService = appUserService;
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users/{id}")
     public ResponseEntity<AppUserResponseDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok().body(appUserService.getUserById(id));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/users")
     public ResponseEntity<List<AppUserResponseDTO>> getAllUsers() {
@@ -54,30 +59,29 @@ public class AppUserController {
     }
     
 
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     @PutMapping("/users/{id}")
-    public ResponseEntity<AppUserResponseDTO> updateUserInformation(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO entity, Authentication authentication) {
-        
-        // Proceed with updating the user information
-       AppUser user = (AppUser) authentication.getPrincipal();
-       
-       if(!user.getId().equals(id)){
-            return ResponseEntity.status(403).build(); // Return 403 Forbidden if the authenticated user is not the same as the user being updated
-       }
+    public ResponseEntity<AppUserResponseDTO> updateUserInformation(@PathVariable Long id, @Valid @RequestBody UpdateUserDTO entity) {
        
         return ResponseEntity.ok().body(appUserService.updateUserInformation(id, entity));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
     @PutMapping("/users/{id}/password")
     public ResponseEntity<AppUserResponseDTO> updatePassword(@PathVariable Long id, @Valid  @RequestBody PasswordRequestDTO passwordRequestDTO) {
         return ResponseEntity.ok().body(appUserService.updatePassword(id, passwordRequestDTO.getNewPassword()));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/users/{id}/role")
     public ResponseEntity<AppUserResponseDTO> updateRole(@PathVariable Long id, @RequestBody UpdateRole updateRole) {
         return ResponseEntity.ok().body(appUserService.updateRole(id, updateRole.getRole()));
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id){
