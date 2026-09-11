@@ -63,5 +63,11 @@ September 8th 2026
 .Removed the Role USER so now new accounts automatically default to STAFF
 .Tested all endpoints from USER and STAFF views 
 WHATS NEXT
-.Draw an endpoint to role table diagram
+.Draw an endpoint to role table diagram (Done)
+.Start milestone 3 (Started)
+
+September 10th 2026
+.Completed the endpoint to role table
+.Added PreAuthorize annotations to all controllers
+WHATS NEXT
 .Start milestone 3
