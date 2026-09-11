@@ -3,6 +3,7 @@ package com.example.inventoryTracker.Controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,26 +25,31 @@ public class SupplierController {
         this.supplierService = supplierService;
     }
 
+    @PreAuthorize("hasRole('ADMIN') || hasRole('STAFF')")
     @GetMapping("/suppliers")
     public ResponseEntity<List<SupplierResponseDTO>> getAllSuppliers() {
         return ResponseEntity.ok().body(supplierService.getAllSuppliers());
     }
 
+    @PreAuthorize("hasRole('ADMIN') || hasRole('STAFF')")
     @GetMapping("/suppliers/{id}")
     public ResponseEntity<SupplierResponseDTO> getSupplierById(@PathVariable Long id) {
         return ResponseEntity.ok().body(supplierService.getSupplierById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/suppliers")
     public ResponseEntity<SupplierResponseDTO> createSupplier(@RequestBody SupplierRequestDTO supplierDTO) {
         return ResponseEntity.ok().body(supplierService.createSupplier(supplierDTO));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/suppliers/{id}")
     public ResponseEntity<SupplierResponseDTO> updateSupplier(@PathVariable Long id, @RequestBody SupplierRequestDTO supplierDTO) {
         return ResponseEntity.ok().body(supplierService.updateSupplier(id, supplierDTO));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/suppliers/{id}")
     public ResponseEntity<Void> deleteSupplier(@PathVariable Long id) {
         supplierService.deleteSupplier(id);

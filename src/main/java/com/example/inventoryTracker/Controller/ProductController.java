@@ -3,7 +3,7 @@ package com.example.inventoryTracker.Controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import com.example.inventoryTracker.DTO.RequestDTOS.ProductRequestDTO;
 import com.example.inventoryTracker.DTO.ResponseDTOS.ProductResponseDTO;
@@ -31,26 +31,31 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @PreAuthorize("hasRole('ADMIN') || hasRole('STAFF')")
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductResponseDTO> getProduct(@PathVariable Long id) {
         return ResponseEntity.ok().body(productService.findProductById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN') || hasRole('STAFF')")
     @GetMapping("/products")
     public ResponseEntity<List<ProductResponseDTO>> getAllProducts() {
         return ResponseEntity.ok().body(productService.findAllProducts());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/products")
     public ResponseEntity<ProductResponseDTO> postMethodName(@RequestBody ProductRequestDTO productDTO) {
         return ResponseEntity.ok().body(productService.saveProduct(productDTO));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/products/{id}")
     public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDTO productDTO) {
         return ResponseEntity.ok().body(productService.updateProduct(id, productDTO));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/products/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
