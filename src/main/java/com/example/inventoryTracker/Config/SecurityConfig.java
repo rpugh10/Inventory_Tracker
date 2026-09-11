@@ -36,8 +36,6 @@ public class SecurityConfig {
                 "/register",
                 "/swagger-ui/**",
                 "/v3/api-docs/**").permitAll() // Allow unauthenticated access to the login and register endpoints
-                .requestMatchers("/products/**").hasRole("ADMIN") // Require ADMIN role for /products/** endpoints
-                .requestMatchers("/inventory-transactions/**").hasAnyRole("ADMIN", "STAFF") 
                 .anyRequest().authenticated()                           
             );
         return http.build();
