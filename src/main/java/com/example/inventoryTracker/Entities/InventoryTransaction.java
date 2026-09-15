@@ -27,19 +27,19 @@ public class InventoryTransaction {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "userID", foreignKey = @jakarta.persistence.ForeignKey(name = "userID"))
+    @JoinColumn(name = "user_id", foreignKey = @jakarta.persistence.ForeignKey(name = "user_id"))
     private AppUser user;
 
     @ManyToOne
-    @JoinColumn(name = "supplierID", foreignKey = @jakarta.persistence.ForeignKey(name = "supplierID"))
+    @JoinColumn(name = "supplier_id", foreignKey = @jakarta.persistence.ForeignKey(name = "supplier_id"))
     private Supplier supplier;
 
     @ManyToOne
-    @JoinColumn(name = "productID", foreignKey = @jakarta.persistence.ForeignKey(name = "productID"))
+    @JoinColumn(name = "product_id", foreignKey = @jakarta.persistence.ForeignKey(name = "product_id"))
     private Product product;
 
     @ManyToOne
-    @JoinColumn(name = "locationID", foreignKey = @jakarta.persistence.ForeignKey(name = "locationID"))
+    @JoinColumn(name = "location_id", foreignKey = @jakarta.persistence.ForeignKey(name = "location_id"))
     private Location location;
 
     @Column(name = "Quantity")

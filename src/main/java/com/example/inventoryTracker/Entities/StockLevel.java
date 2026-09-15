@@ -27,13 +27,13 @@ public class StockLevel {
     private StockLevelId id;
 
     @ManyToOne
-    @MapsId("productId")
-    @JoinColumn(name = "productId", foreignKey = @jakarta.persistence.ForeignKey(name = "productId"))
+    @MapsId("product_id")
+    @JoinColumn(name = "product_id", foreignKey = @jakarta.persistence.ForeignKey(name = "product_id"))
     private Product product;
 
     @ManyToOne
-    @MapsId("locationId")
-    @JoinColumn(name = "locationId", foreignKey = @jakarta.persistence.ForeignKey(name = "locationId"))
+    @MapsId("location_id")
+    @JoinColumn(name = "location_id", foreignKey = @jakarta.persistence.ForeignKey(name = "location_id"))
     private Location location;
 
     @Column(name = "Quantity")

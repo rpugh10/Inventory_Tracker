@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class StockLevelId {
-    private Long productId;
+    private Long product_id;
 
-    private Long locationId;
+    private Long location_id;
 
      @Override
     public boolean equals(Object o) {
@@ -24,12 +24,12 @@ public class StockLevelId {
 
         StockLevelId that = (StockLevelId) o;
 
-        return Objects.equals(productId, that.productId)
-                && Objects.equals(locationId, that.locationId);
+        return Objects.equals(product_id, that.product_id)
+                && Objects.equals(location_id, that.location_id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productId, locationId);
+        return Objects.hash(product_id, location_id);
     }
 }
