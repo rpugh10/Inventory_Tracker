@@ -35,6 +35,7 @@ public class SecurityConfig {
                 "/auth/login", 
                 "/register",
                 "/swagger-ui/**",
+                "/swagger-ui.html",
                 "/v3/api-docs/**").permitAll() // Allow unauthenticated access to the login and register endpoints
                 .anyRequest().authenticated()                           
             );

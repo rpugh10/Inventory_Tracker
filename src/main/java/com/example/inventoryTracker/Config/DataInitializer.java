@@ -22,7 +22,7 @@ public class DataInitializer {
     @Bean 
     CommandLineRunner createFirstAdmin(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
         return args -> {
-            if(appUserRepository.findByUsername("adminUsername").isEmpty()) {
+            if(appUserRepository.findByUsername(adminUsername).isEmpty()) {
                 AppUser admin = new AppUser();
                 admin.setUsername(adminUsername);
                 admin.setEmail("admin@example.com");
