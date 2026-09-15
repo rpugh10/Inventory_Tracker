@@ -4,9 +4,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-
-import com.example.inventoryTracker.DTO.RequestDTOS.InventoryTransactionRequestDTO;
+import com.example.inventoryTracker.DTO.RequestDTOS.TransactionRequestDTOS.InventoryTransactionRequestDTO;
+import com.example.inventoryTracker.DTO.ResponseDTOS.InventoryTransactionOutDTO;
 import com.example.inventoryTracker.DTO.ResponseDTOS.InventoryTransactionResponseDTO;
 import com.example.inventoryTracker.Entities.AppUser;
 import com.example.inventoryTracker.Entities.InventoryTransaction;
@@ -18,6 +19,7 @@ import com.example.inventoryTracker.Repository.AppUserRepository;
 import com.example.inventoryTracker.Repository.InventoryTransactionRepository;
 import com.example.inventoryTracker.Repository.LocationRepository;
 import com.example.inventoryTracker.Repository.ProductRepository;
+import com.example.inventoryTracker.Repository.StockLevelRepository;
 import com.example.inventoryTracker.Repository.SupplierRepository;
 
 
@@ -31,41 +33,46 @@ public class InventoryTransactionService {
     private final ProductRepository productRepository;
     private final LocationRepository locationRepository;
     private final SupplierRepository supplierRepository;
+    private final StockLevelService stockLevelService;
 
     public InventoryTransactionService(InventoryTransactionRepository inventoryTransactionRepository,
             InventoryTransactionMapper inventoryTransactionMapper, AppUserRepository appUserRepository,
-            ProductRepository productRepository, LocationRepository locationRepository, SupplierRepository supplierRepository) {
+            ProductRepository productRepository, LocationRepository locationRepository, SupplierRepository supplierRepository, StockLevelService stockLevelService) {
+       
         this.inventoryTransactionRepository = inventoryTransactionRepository;
         this.inventoryTransactionMapper = inventoryTransactionMapper;
         this.appUserRepository = appUserRepository;
         this.productRepository = productRepository;
         this.locationRepository = locationRepository;
         this.supplierRepository = supplierRepository;
+        this.stockLevelService = stockLevelService;
     }
 
 
-    public InventoryTransactionResponseDTO findInventoryTransactionById(Long id) {
+
+    public InventoryTransactionOutDTO findInventoryTransactionById(Long id) {
         return inventoryTransactionRepository.findById(id).map(inventoryTransactionMapper::toInventoryTransactionResponseDTO)
                 .orElseThrow(() -> new RuntimeException("Inventory transaction not found with id: " + id));
     }
 
 
-    public List<InventoryTransactionResponseDTO> findAllInventoryTransactions() {
+    public List<InventoryTransactionOutDTO> findAllInventoryTransactions() {
         return inventoryTransactionRepository.findAll().stream().map(inventoryTransactionMapper::toInventoryTransactionResponseDTO).toList();
     }
 
-    public InventoryTransactionResponseDTO saveInventoryTransaction(InventoryTransactionRequestDTO inventoryTransactionDTO) {
+    @Transactional 
+    public InventoryTransactionOutDTO saveInventoryTransaction(InventoryTransactionRequestDTO inventoryTransactionDTO) {
         InventoryTransaction transaction = inventoryTransactionMapper.toInventoryTransaction(inventoryTransactionDTO);
         setRelationships(transaction, inventoryTransactionDTO);
         transaction.setTransactionDate(LocalDateTime.now());
+        stockLevelService.updateStockLevel(transaction.getProduct().getId(), transaction.getLocation().getId(), transaction.getQuantity(), transaction.getTransactionType());
         return inventoryTransactionMapper.toInventoryTransactionResponseDTO(inventoryTransactionRepository.save(transaction));
     }
 
-    public InventoryTransactionResponseDTO updateInventoryTransaction(Long id, InventoryTransactionRequestDTO inventoryTransactionDTO) {
+    public InventoryTransactionOutDTO updateInventoryTransaction(Long id, InventoryTransactionRequestDTO inventoryTransactionDTO) {
         InventoryTransaction transaction = inventoryTransactionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Inventory transaction not found with id: " + id));
         transaction.setQuantity(inventoryTransactionDTO.getQuantity());
-        transaction.setNote(inventoryTransactionDTO.getNote());
         transaction.setTransactionType(inventoryTransactionDTO.getTransactionTypeEnum());
         setRelationships(transaction, inventoryTransactionDTO);
         return inventoryTransactionMapper.toInventoryTransactionResponseDTO(inventoryTransactionRepository.save(transaction));
@@ -79,8 +86,6 @@ public class InventoryTransactionService {
     }
 
     private void setRelationships(InventoryTransaction transaction, InventoryTransactionRequestDTO dto) {
-        AppUser user = appUserRepository.findById(dto.getAppUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + dto.getAppUserId()));
         Product product = productRepository.findById(dto.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found with id: " + dto.getProductId()));
         Location location = locationRepository.findById(dto.getLocationId())
@@ -90,7 +95,6 @@ public class InventoryTransactionService {
         if (supplier == null) {
             throw new RuntimeException("Supplier not found with id: " + dto.getSupplierId());
         }
-        transaction.setUser(user);
         transaction.setProduct(product);
         transaction.setLocation(location);
         transaction.setSupplier(supplier);

@@ -10,6 +10,7 @@ import com.example.inventoryTracker.Entities.Location;
 import com.example.inventoryTracker.Entities.Product;
 import com.example.inventoryTracker.Entities.StockLevel;
 import com.example.inventoryTracker.Entities.StockLevelId;
+import com.example.inventoryTracker.Entities.Enums.TransactionType;
 import com.example.inventoryTracker.Mapper.StockLevelMapper;
 import com.example.inventoryTracker.Repository.LocationRepository;
 import com.example.inventoryTracker.Repository.ProductRepository;
@@ -46,11 +47,22 @@ public class StockLevelService {
         return stockLevelMapper.toStockLevelDTO(stockLevelRepository.save(stockLevel));
     }
 
-    public StockLevelResponseDTO updateStockLevel(Long productId, Long locationId, StockLevelRequestDTO stockLevelDTO) {
+    public StockLevelResponseDTO updateStockLevel(Long productId, Long locationId, Integer quantity, TransactionType transactionType) {
         StockLevel stockLevel = stockLevelRepository.findById(new StockLevelId(productId, locationId))
                 .orElseThrow(() -> new RuntimeException("Stock level not found"));
-        stockLevel.setQuantity(stockLevelDTO.getQuantity());
-        stockLevel.setTransactionType(stockLevelDTO.getTransactionType());
+        
+        if(transactionType == TransactionType.STOCK_IN) {
+            stockLevel.setQuantity(stockLevel.getQuantity() + quantity);
+        } else if(transactionType == TransactionType.STOCK_OUT) {
+            if(stockLevel.getQuantity() < quantity) {
+                throw new RuntimeException("Insufficient stock for productId: " + productId + " at locationId: " + locationId);
+            }
+            stockLevel.setQuantity(stockLevel.getQuantity() - quantity);
+        }else if(transactionType == TransactionType.STOCK_ADJUSTMENT) {
+            stockLevel.setQuantity(quantity);
+        }
+        
+        stockLevel.setTransactionType(transactionType);
         return stockLevelMapper.toStockLevelDTO(stockLevelRepository.save(stockLevel));
     }
 
