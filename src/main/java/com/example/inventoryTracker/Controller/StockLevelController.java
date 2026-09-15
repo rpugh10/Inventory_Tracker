@@ -47,7 +47,8 @@ public class StockLevelController {
     @PutMapping("/stock-levels/{productId}/{locationId}")
     public ResponseEntity<StockLevelResponseDTO> updateStockLevel(@PathVariable Long productId, @PathVariable Long locationId,
             @RequestBody StockLevelRequestDTO stockLevelDTO) {
-        return ResponseEntity.ok(stockLevelService.updateStockLevel(productId, locationId, stockLevelDTO));
+        return ResponseEntity.ok(stockLevelService.updateStockLevel(productId, locationId,
+            stockLevelDTO.getQuantity(), stockLevelDTO.getTransactionType()));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
