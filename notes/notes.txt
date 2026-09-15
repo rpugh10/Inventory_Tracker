@@ -36,3 +36,36 @@ This tells Spring Security to pay attention to annotations such as @PreAuthorize
 
 9. @Version
 This annotation tells hibernate to track row modifications. It prevents two processes from overwriting each others data simultaneously without warning.
+
+10.
+mvn clean package Builds a JAR file
+
+11.
+FROM eclipse-temurin:24-jre 
+This gives our container a Java 24 runtime environment 
+The jre means we only need the Java Runtime environment to run our already built JAR we don't need the full JDK
+because we are not compiling Java inside this image
+
+12. COPY target/inventoryTracker-0.0.1-SNAPSHOT.jar app.jar
+This instruction tells Docker take this JAR from my project and copy it into the Docker image
+app.jar is the destination and the stuff before it is the source
+
+13. EXPOSE 8080
+Tells Docker what port the application is on at runtime
+
+14. ENTRYPOINT ["java", "-jar", "app.jar"]
+Whenever a container is started from this image run this command
+
+15. Docker compose build 
+builds or rebuilds Docker images for any services defined in your compose.yaml
+
+15. Docker compose up
+ builds, (re)creates, starts, and attaches to containers for all services defined in your compose.yaml
+
+16. Docker compose config
+ It essentially compiles and processes your project's configuration without actually building or starting any containers
+
+ 17. Docker compose down -v
+ stops and entirely removes the containers and networks created by docker compose up
+ It essentially cleans up the active deployment infrastructure of your project so it can be rebuilt from scratch next time
+ the -v removes postgresql data volume
