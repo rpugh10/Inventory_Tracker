@@ -71,3 +71,15 @@ September 10th 2026
 .Added PreAuthorize annotations to all controllers
 WHATS NEXT
 .Start milestone 3
+
+September 14th 2026
+.Dockerize my project
+WHATS NEXT
+.Need to need to work on updateStockLevel method currently the first STOCK_IN cannot get created
+and need to validate the quantity. (Done)
+
+September 18th 2026
+.The updateStockLevel now checks to see if the id exists and if not it will create a stock level with the transaction STOCK_IN
+.Also validation checks are in place to ensure that quantity is not null, < 0 and transaction type is not null
+WHATS NEXT
+Need to make my StockLevel Controller read only as it makes sense to update the stock through the inventoryTransaction endpoints.
