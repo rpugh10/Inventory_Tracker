@@ -1,6 +1,7 @@
 package com.example.inventoryTracker.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -48,17 +49,40 @@ public class StockLevelService {
     }
 
     public StockLevelResponseDTO updateStockLevel(Long productId, Long locationId, Integer quantity, TransactionType transactionType) {
-        StockLevel stockLevel = stockLevelRepository.findById(new StockLevelId(productId, locationId))
-                .orElseThrow(() -> new RuntimeException("Stock level not found"));
+        Optional<StockLevel> existingStockLevel = stockLevelRepository.findById(new StockLevelId(productId, locationId));
         
+        if(existingStockLevel.isEmpty()){
+            if(transactionType == TransactionType.STOCK_OUT || transactionType == TransactionType.STOCK_ADJUSTMENT) {
+                throw new RuntimeException("Stock level not found for productId: " + productId + " at locationId: " + locationId);
+            }
+
+            StockLevel newStockLevel = new StockLevel();
+            newStockLevel.setId(new StockLevelId(productId, locationId));
+            newStockLevel.setQuantity(quantity);
+            newStockLevel.setTransactionType(transactionType);
+            StockLevelRequestDTO requestDTO = new StockLevelRequestDTO();
+            requestDTO.setProductId(productId);
+            requestDTO.setLocationId(locationId);
+            setRelationshipsAndId(newStockLevel, requestDTO);
+            return stockLevelMapper.toStockLevelDTO(stockLevelRepository.save(newStockLevel));
+        }
+
+        StockLevel stockLevel = existingStockLevel.get();
+
         if(transactionType == TransactionType.STOCK_IN) {
+            if(stockLevel.getQuantity() + quantity < 0 || stockLevel.getQuantity() == null) {
+                throw new RuntimeException("Resulting stock level cannot be negative for productId: " + productId + " at locationId: " + locationId);
+            }
             stockLevel.setQuantity(stockLevel.getQuantity() + quantity);
         } else if(transactionType == TransactionType.STOCK_OUT) {
-            if(stockLevel.getQuantity() < quantity) {
+            if(stockLevel.getQuantity() < quantity || stockLevel.getQuantity() == null || stockLevel.getTransactionType() == null) {
                 throw new RuntimeException("Insufficient stock for productId: " + productId + " at locationId: " + locationId);
             }
             stockLevel.setQuantity(stockLevel.getQuantity() - quantity);
         }else if(transactionType == TransactionType.STOCK_ADJUSTMENT) {
+            if(quantity == null) {
+                throw new RuntimeException("Quantity cannot be null for stock adjustment for productId: " + productId + " at locationId: " + locationId);
+            }
             stockLevel.setQuantity(quantity);
         }
         
