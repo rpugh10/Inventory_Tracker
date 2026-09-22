@@ -81,5 +81,21 @@ and need to validate the quantity. (Done)
 September 18th 2026
 .The updateStockLevel now checks to see if the id exists and if not it will create a stock level with the transaction STOCK_IN
 .Also validation checks are in place to ensure that quantity is not null, < 0 and transaction type is not null
+.Missing stock rows reject both STOCK_OUT and STOCK_ADJUSTMENT, only STOCK_IN will be accepted.
 WHATS NEXT
 Need to make my StockLevel Controller read only as it makes sense to update the stock through the inventoryTransaction endpoints.
+
+September 21st 2026
+.Adding NotNull and Positive annotations to StockLevelRequestDTO class.
+.Added Valid annotation to all RequestBody annotations in inventoryTransaction controller
+.Checked for null value first before evaluating quantity in StockLevelService.
+.Added Mapping to userId in inventoryTransactionOutDTO.
+.Set the user in inventoryTransaction Service 
+.Created a new Flyway mitigation to make supplier id nullable 
+.Added note and mapped it in inventoryTransaction mapper.
+.Added custom exceptions and added them to the GlobalExceptionHandler. Called them in the inventoryTransaction service and stock level service.
+.Added lastUpdated to the StockLevel Entity and created a new Flyway mitigation to add a column.
+.Created a new DB column called lastUpdated in Stock level so the user will know when the stock was last Updated
+WHATS NEXT 
+.Decided it would be easier to remove the PUT and DELETE methods in inventoryTransaction controller because we can just adjust the 
+transaction with STOCK_ADJUSTMENT.
