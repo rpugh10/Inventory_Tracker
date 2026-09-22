@@ -12,6 +12,7 @@ public interface StockLevelMapper {
 
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "locationId", source = "location.id")
+    @Mapping(target = "lastUpdated", source = "lastUpdated")
     StockLevelResponseDTO toStockLevelDTO(StockLevel stockLevel);
 
     @Mapping(target = "id", ignore = true)
