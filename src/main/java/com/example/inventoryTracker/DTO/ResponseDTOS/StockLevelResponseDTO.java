@@ -1,5 +1,7 @@
 package com.example.inventoryTracker.DTO.ResponseDTOS;
 
+import java.time.LocalDateTime;
+
 import com.example.inventoryTracker.Entities.StockLevelId;
 import com.example.inventoryTracker.Entities.Enums.TransactionType;
 
@@ -17,4 +19,6 @@ public class StockLevelResponseDTO {
     private Integer quantity;
 
     private TransactionType transactionType;
+
+    private LocalDateTime lastUpdated;
 }

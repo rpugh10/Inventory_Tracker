@@ -1,5 +1,7 @@
 package com.example.inventoryTracker.DTO.ResponseDTOS;
 
+import java.time.LocalDateTime;
+
 import com.example.inventoryTracker.Entities.Enums.TransactionType;
 
 import lombok.Data;
@@ -16,5 +18,4 @@ public class InventoryTransactionResponseDTO {
     private String note;
     private Integer quantity;
     private TransactionType transactionTypeEnum;
-    private String transactionDate;
 }
