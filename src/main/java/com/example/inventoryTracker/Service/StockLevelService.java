@@ -12,10 +12,17 @@ import com.example.inventoryTracker.Entities.Product;
 import com.example.inventoryTracker.Entities.StockLevel;
 import com.example.inventoryTracker.Entities.StockLevelId;
 import com.example.inventoryTracker.Entities.Enums.TransactionType;
+import com.example.inventoryTracker.ExceptionHandler.Exceptions.InsufficientStock;
+import com.example.inventoryTracker.ExceptionHandler.Exceptions.InvalidQuantity;
+import com.example.inventoryTracker.ExceptionHandler.Exceptions.InvalidTransactionType;
+import com.example.inventoryTracker.ExceptionHandler.Exceptions.LocationNotFound;
+import com.example.inventoryTracker.ExceptionHandler.Exceptions.ProductNotFound;
+import com.example.inventoryTracker.ExceptionHandler.Exceptions.StockLevelIdNotFound;
 import com.example.inventoryTracker.Mapper.StockLevelMapper;
 import com.example.inventoryTracker.Repository.LocationRepository;
 import com.example.inventoryTracker.Repository.ProductRepository;
 import com.example.inventoryTracker.Repository.StockLevelRepository;
+import com.example.inventoryTracker.Repository.SupplierRepository;
 
 @Service
 public class StockLevelService {
@@ -35,7 +42,7 @@ public class StockLevelService {
 
     public StockLevelResponseDTO findStockLevelById(Long productId, Long locationId) {
         return stockLevelRepository.findById(new StockLevelId(productId, locationId)).map(stockLevelMapper::toStockLevelDTO)
-                .orElseThrow(() -> new RuntimeException("Stock level not found"));
+                .orElseThrow(() -> new StockLevelIdNotFound("Stock level not found for productId: " + productId + " at locationId: " + locationId));
     }
 
     public List<StockLevelResponseDTO> findAllStockLevels() {
@@ -53,7 +60,7 @@ public class StockLevelService {
         
         if(existingStockLevel.isEmpty()){
             if(transactionType == TransactionType.STOCK_OUT || transactionType == TransactionType.STOCK_ADJUSTMENT) {
-                throw new RuntimeException("Stock level not found for productId: " + productId + " at locationId: " + locationId);
+                throw new InvalidTransactionType("Invalid transaction type for non-existing stock level for productId: " + productId + " at locationId: " + locationId);
             }
 
             StockLevel newStockLevel = new StockLevel();
@@ -63,46 +70,53 @@ public class StockLevelService {
             StockLevelRequestDTO requestDTO = new StockLevelRequestDTO();
             requestDTO.setProductId(productId);
             requestDTO.setLocationId(locationId);
+            requestDTO.setQuantity(quantity);
+            requestDTO.setTransactionType(transactionType);
             setRelationshipsAndId(newStockLevel, requestDTO);
+            newStockLevel.setLastUpdated(java.time.LocalDateTime.now());
             return stockLevelMapper.toStockLevelDTO(stockLevelRepository.save(newStockLevel));
         }
 
         StockLevel stockLevel = existingStockLevel.get();
+        if(quantity == null) {
+            throw new InvalidQuantity("Quantity cannot be null for productId: " + productId + " at locationId: " + locationId);
+        }
 
         if(transactionType == TransactionType.STOCK_IN) {
-            if(stockLevel.getQuantity() + quantity < 0 || stockLevel.getQuantity() == null) {
-                throw new RuntimeException("Resulting stock level cannot be negative for productId: " + productId + " at locationId: " + locationId);
+            if(quantity < 0) {
+                throw new InvalidQuantity("Resulting stock level cannot be negative for productId: " + productId + " at locationId: " + locationId);
             }
             stockLevel.setQuantity(stockLevel.getQuantity() + quantity);
         } else if(transactionType == TransactionType.STOCK_OUT) {
-            if(stockLevel.getQuantity() < quantity || stockLevel.getQuantity() == null || stockLevel.getTransactionType() == null) {
-                throw new RuntimeException("Insufficient stock for productId: " + productId + " at locationId: " + locationId);
+            if(stockLevel.getQuantity() == null || stockLevel.getQuantity() < quantity || stockLevel.getTransactionType() == null) {
+                throw new InsufficientStock("Insufficient stock for productId: " + productId + " at locationId: " + locationId);
             }
             stockLevel.setQuantity(stockLevel.getQuantity() - quantity);
         }else if(transactionType == TransactionType.STOCK_ADJUSTMENT) {
-            if(quantity == null) {
-                throw new RuntimeException("Quantity cannot be null for stock adjustment for productId: " + productId + " at locationId: " + locationId);
+            if(quantity < 0) {
+                throw new InvalidQuantity("Resulting stock level cannot be negative for productId: " + productId + " at locationId: " + locationId);
             }
             stockLevel.setQuantity(quantity);
         }
         
         stockLevel.setTransactionType(transactionType);
+        stockLevel.setLastUpdated(java.time.LocalDateTime.now());
         return stockLevelMapper.toStockLevelDTO(stockLevelRepository.save(stockLevel));
     }
 
     public void deleteStockLevel(Long productId, Long locationId) {
         StockLevelId id = new StockLevelId(productId, locationId);
         if (!stockLevelRepository.existsById(id)) {
-            throw new RuntimeException("Stock level not found");
+            throw new StockLevelIdNotFound("Stock level not found");
         }
         stockLevelRepository.deleteById(id);
     }
 
     private void setRelationshipsAndId(StockLevel stockLevel, StockLevelRequestDTO dto) {
         Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + dto.getProductId()));
+                .orElseThrow(() -> new ProductNotFound("Product not found with id: " + dto.getProductId()));
         Location location = locationRepository.findById(dto.getLocationId())
-                .orElseThrow(() -> new RuntimeException("Location not found with id: " + dto.getLocationId()));
+                .orElseThrow(() -> new LocationNotFound("Location not found with id: " + dto.getLocationId()));
         stockLevel.setId(new StockLevelId(dto.getProductId(), dto.getLocationId()));
         stockLevel.setProduct(product);
         stockLevel.setLocation(location);
