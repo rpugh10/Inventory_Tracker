@@ -17,6 +17,8 @@ import com.example.inventoryTracker.DTO.ResponseDTOS.InventoryTransactionOutDTO;
 import com.example.inventoryTracker.DTO.ResponseDTOS.InventoryTransactionResponseDTO;
 import com.example.inventoryTracker.Service.InventoryTransactionService;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class InventoryTransactionController {
 
@@ -38,17 +40,18 @@ public class InventoryTransactionController {
         return ResponseEntity.ok(inventoryTransactionService.findAllInventoryTransactions());
     }
 
+    
     @PreAuthorize("hasRole('ADMIN') || hasRole('STAFF')")
     @PostMapping("/inventory-transactions")
     public ResponseEntity<InventoryTransactionOutDTO> createInventoryTransaction(
-            @RequestBody InventoryTransactionRequestDTO inventoryTransactionDTO) {
+           @Valid @RequestBody InventoryTransactionRequestDTO inventoryTransactionDTO) {
         return ResponseEntity.ok(inventoryTransactionService.saveInventoryTransaction(inventoryTransactionDTO));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/inventory-transactions/{id}")
     public ResponseEntity<InventoryTransactionOutDTO> updateInventoryTransaction(@PathVariable Long id,
-            @RequestBody InventoryTransactionRequestDTO inventoryTransactionDTO) {
+           @Valid @RequestBody InventoryTransactionRequestDTO inventoryTransactionDTO) {
         return ResponseEntity.ok(inventoryTransactionService.updateInventoryTransaction(id, inventoryTransactionDTO));
     }
 
