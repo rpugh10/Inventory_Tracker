@@ -69,3 +69,6 @@ builds or rebuilds Docker images for any services defined in your compose.yaml
  stops and entirely removes the containers and networks created by docker compose up
  It essentially cleans up the active deployment infrastructure of your project so it can be rebuilt from scratch next time
  the -v removes postgresql data volume
+
+ 18. mvn clean package -DskipTests
+This builds a JAR while skipping the tests

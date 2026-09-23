@@ -99,3 +99,10 @@ September 21st 2026
 WHATS NEXT 
 .Decided it would be easier to remove the PUT and DELETE methods in inventoryTransaction controller because we can just adjust the 
 transaction with STOCK_ADJUSTMENT.
+
+September 22nd 2026
+.Debugged the application Flyway mitigation V8 was causing problems so I wiped the data on the local environment
+and created a new database.
+WHATS NEXT.
+.I want to integrate unit testing and Github Actions before we move forward
+.Still have to remove PUT and DELETE methods.
