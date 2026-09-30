@@ -40,3 +40,6 @@
 | POST   |  |/suppliers     |  |ADMIN|
 | PUT    |  |/suppliers/{id}|  |ADMIN| 
 | DELETE |  |/suppliers/{id}|  |ADMIN|
+
+
+

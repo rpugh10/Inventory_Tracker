@@ -22,7 +22,6 @@ import com.example.inventoryTracker.Mapper.StockLevelMapper;
 import com.example.inventoryTracker.Repository.LocationRepository;
 import com.example.inventoryTracker.Repository.ProductRepository;
 import com.example.inventoryTracker.Repository.StockLevelRepository;
-import com.example.inventoryTracker.Repository.SupplierRepository;
 
 @Service
 public class StockLevelService {
@@ -88,7 +87,7 @@ public class StockLevelService {
             }
             stockLevel.setQuantity(stockLevel.getQuantity() + quantity);
         } else if(transactionType == TransactionType.STOCK_OUT) {
-            if(stockLevel.getQuantity() == null || stockLevel.getQuantity() < quantity || stockLevel.getTransactionType() == null) {
+            if(stockLevel.getQuantity() == null || stockLevel.getQuantity() < quantity) {
                 throw new InsufficientStock("Insufficient stock for productId: " + productId + " at locationId: " + locationId);
             }
             stockLevel.setQuantity(stockLevel.getQuantity() - quantity);
