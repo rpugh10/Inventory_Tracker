@@ -1,27 +1,27 @@
 package com.example.inventoryTracker.Controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.inventoryTracker.DTO.RequestDTOS.TransactionRequestDTOS.InventoryTransactionRequestDTO;
 import com.example.inventoryTracker.DTO.ResponseDTOS.InventoryTransactionOutDTO;
-import com.example.inventoryTracker.DTO.ResponseDTOS.InventoryTransactionResponseDTO;
 import com.example.inventoryTracker.Service.InventoryTransactionService;
 
 import jakarta.validation.Valid;
 
 @RestController
 public class InventoryTransactionController {
-
     private final InventoryTransactionService inventoryTransactionService;
 
     public InventoryTransactionController(InventoryTransactionService inventoryTransactionService) {
@@ -36,29 +36,19 @@ public class InventoryTransactionController {
 
     @PreAuthorize("hasRole('ADMIN') || hasRole('STAFF')")
     @GetMapping("/inventory-transactions")
-    public ResponseEntity<List<InventoryTransactionOutDTO>> getAllInventoryTransactions() {
-        return ResponseEntity.ok(inventoryTransactionService.findAllInventoryTransactions());
+    public ResponseEntity<List<InventoryTransactionOutDTO>> getAllInventoryTransactions(
+            @RequestParam(required = false) Long productId,
+            @RequestParam(required = false) Long locationId,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime to) {
+        return ResponseEntity.ok(inventoryTransactionService.findAllInventoryTransactions(productId, locationId, from, to));
     }
 
-    
     @PreAuthorize("hasRole('ADMIN') || hasRole('STAFF')")
     @PostMapping("/inventory-transactions")
     public ResponseEntity<InventoryTransactionOutDTO> createInventoryTransaction(
-           @Valid @RequestBody InventoryTransactionRequestDTO inventoryTransactionDTO) {
-        return ResponseEntity.ok(inventoryTransactionService.saveInventoryTransaction(inventoryTransactionDTO));
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/inventory-transactions/{id}")
-    public ResponseEntity<InventoryTransactionOutDTO> updateInventoryTransaction(@PathVariable Long id,
-           @Valid @RequestBody InventoryTransactionRequestDTO inventoryTransactionDTO) {
-        return ResponseEntity.ok(inventoryTransactionService.updateInventoryTransaction(id, inventoryTransactionDTO));
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/inventory-transactions/{id}")
-    public ResponseEntity<Void> deleteInventoryTransaction(@PathVariable Long id) {
-        inventoryTransactionService.deleteInventoryTransaction(id);
-        return ResponseEntity.noContent().build();
+            @Valid @RequestBody InventoryTransactionRequestDTO inventoryTransactionDTO) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(inventoryTransactionService.saveInventoryTransaction(inventoryTransactionDTO));
     }
 }
