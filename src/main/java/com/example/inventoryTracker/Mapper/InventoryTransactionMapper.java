@@ -13,13 +13,12 @@ import com.example.inventoryTracker.Entities.InventoryTransaction;
 public interface InventoryTransactionMapper {
 
 
-    @Mapping (target = "userId", source = "user.id")
+    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "supplierId", source = "supplier.id")
     @Mapping(target = "locationId", source = "location.id")
     @Mapping(target = "productId", source = "product.id")
     @Mapping(target = "productName", source = "product.productName")
-    @Mapping(target = "note", source = "note")
-    @Mapping (target = "transactionDate", source = "transactionDate")
-    @Mapping(target = "transactionTypeEnum", source = "transactionType")
+    @Mapping(target = "transactionDate", source = "transactionDate")
     InventoryTransactionOutDTO toInventoryTransactionResponseDTO(InventoryTransaction inventoryTransaction);
 
     @Mapping(target = "id", ignore = true)
@@ -27,6 +26,5 @@ public interface InventoryTransactionMapper {
     @Mapping(target = "supplier", ignore = true)
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "location", ignore = true)
-    @Mapping(target = "transactionType", source = "transactionTypeEnum")
     InventoryTransaction toInventoryTransaction(InventoryTransactionRequestDTO inventoryTransactionDTO);
 }
