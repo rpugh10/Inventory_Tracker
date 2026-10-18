@@ -12,13 +12,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class InventoryTransaction {
     
@@ -54,4 +52,18 @@ public class InventoryTransaction {
     @Enumerated(EnumType.STRING)
     @Column(name = "TransactionType")
     private TransactionType transactionType;
+
+    public InventoryTransaction(Long id, AppUser user, Supplier supplier, Product product,
+            Location location, Integer quantity, LocalDateTime transactionDate, String note,
+            TransactionType transactionType) {
+        this.id = id;
+        this.user = user;
+        this.supplier = supplier;
+        this.product = product;
+        this.location = location;
+        this.quantity = quantity;
+        this.transactionDate = transactionDate;
+        this.note = note;
+        this.transactionType = transactionType;
+    }
 }

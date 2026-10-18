@@ -16,15 +16,25 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Version;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class StockLevel {
+
+    public StockLevel() {
+    }
+
+    public StockLevel(Long version, StockLevelId id, Product product, Location location,
+                      Integer quantity, LocalDateTime lastUpdated, TransactionType transactionType) {
+        this.version = version;
+        this.id = id;
+        this.product = product;
+        this.location = location;
+        this.quantity = quantity;
+        this.lastUpdated = lastUpdated;
+        this.transactionType = transactionType;
+    }
 
     @Version
     private Long version;

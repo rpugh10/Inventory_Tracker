@@ -15,7 +15,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -23,7 +22,6 @@ import lombok.ToString;
 import jakarta.persistence.Version;
 
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
 @Data
 public class AppUser implements UserDetails {
@@ -49,6 +47,15 @@ public class AppUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(name = "Role")
     private Roles role;
+
+    public AppUser(Long version, Long id, String username, String password, String email, Roles role) {
+        this.version = version;
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

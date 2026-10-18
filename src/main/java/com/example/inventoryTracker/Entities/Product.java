@@ -3,14 +3,10 @@ package com.example.inventoryTracker.Entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import jakarta.persistence.Id;
-import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 public class Product {
     
@@ -32,4 +28,17 @@ public class Product {
 
     @Column(name = "UnitCost")
     private Double unitCost;
+
+    public Product() {
+    }
+
+    public Product(Long id, String productName, String unit, String sku,
+                   Integer reorderLevel, Double unitCost) {
+        this.id = id;
+        this.productName = productName;
+        this.unit = unit;
+        this.sku = sku;
+        this.reorderLevel = reorderLevel;
+        this.unitCost = unitCost;
+    }
 }

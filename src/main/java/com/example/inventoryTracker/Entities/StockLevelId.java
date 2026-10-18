@@ -3,20 +3,23 @@ package com.example.inventoryTracker.Entities;
 import java.util.Objects;
 
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class StockLevelId {
     private Long product_id;
 
     private Long location_id;
 
-     @Override
+    public StockLevelId(Long product_id, Long location_id) {
+        this.product_id = product_id;
+        this.location_id = location_id;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
 
