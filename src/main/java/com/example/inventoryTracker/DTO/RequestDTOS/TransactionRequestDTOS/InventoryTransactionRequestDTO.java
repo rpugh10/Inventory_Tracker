@@ -9,10 +9,6 @@ import lombok.Data;
 @Data
 public class InventoryTransactionRequestDTO {
 
-    @NotNull 
-    private Long AppUserId;
-
-    
     private Long supplierId;
 
     @NotNull 
@@ -29,5 +25,5 @@ public class InventoryTransactionRequestDTO {
     private Integer quantity;
 
     @NotNull 
-    private TransactionType transactionTypeEnum;
+    private TransactionType transactionType;
 }
