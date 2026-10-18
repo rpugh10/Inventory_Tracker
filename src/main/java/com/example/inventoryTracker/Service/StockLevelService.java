@@ -1,123 +1,90 @@
 package com.example.inventoryTracker.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.example.inventoryTracker.DTO.RequestDTOS.StockLevelRequestDTO;
 import com.example.inventoryTracker.DTO.ResponseDTOS.StockLevelResponseDTO;
+import com.example.inventoryTracker.Entities.Enums.TransactionType;
 import com.example.inventoryTracker.Entities.Location;
 import com.example.inventoryTracker.Entities.Product;
 import com.example.inventoryTracker.Entities.StockLevel;
 import com.example.inventoryTracker.Entities.StockLevelId;
-import com.example.inventoryTracker.Entities.Enums.TransactionType;
 import com.example.inventoryTracker.ExceptionHandler.Exceptions.InsufficientStock;
 import com.example.inventoryTracker.ExceptionHandler.Exceptions.InvalidQuantity;
 import com.example.inventoryTracker.ExceptionHandler.Exceptions.InvalidTransactionType;
-import com.example.inventoryTracker.ExceptionHandler.Exceptions.LocationNotFound;
-import com.example.inventoryTracker.ExceptionHandler.Exceptions.ProductNotFound;
 import com.example.inventoryTracker.ExceptionHandler.Exceptions.StockLevelIdNotFound;
 import com.example.inventoryTracker.Mapper.StockLevelMapper;
-import com.example.inventoryTracker.Repository.LocationRepository;
-import com.example.inventoryTracker.Repository.ProductRepository;
 import com.example.inventoryTracker.Repository.StockLevelRepository;
 
 @Service
 public class StockLevelService {
-
     private final StockLevelRepository stockLevelRepository;
     private final StockLevelMapper stockLevelMapper;
-    private final ProductRepository productRepository;
-    private final LocationRepository locationRepository;
 
-    public StockLevelService(StockLevelRepository stockLevelRepository, StockLevelMapper stockLevelMapper,
-            ProductRepository productRepository, LocationRepository locationRepository) {
+    public StockLevelService(StockLevelRepository stockLevelRepository, StockLevelMapper stockLevelMapper) {
         this.stockLevelRepository = stockLevelRepository;
         this.stockLevelMapper = stockLevelMapper;
-        this.productRepository = productRepository;
-        this.locationRepository = locationRepository;
     }
 
     public StockLevelResponseDTO findStockLevelById(Long productId, Long locationId) {
-        return stockLevelRepository.findById(new StockLevelId(productId, locationId)).map(stockLevelMapper::toStockLevelDTO)
-                .orElseThrow(() -> new StockLevelIdNotFound("Stock level not found for productId: " + productId + " at locationId: " + locationId));
+        return stockLevelRepository.findById(new StockLevelId(productId, locationId))
+                .map(stockLevelMapper::toStockLevelDTO)
+                .orElseThrow(() -> new StockLevelIdNotFound(
+                        "Stock level not found for productId: " + productId + " at locationId: " + locationId));
     }
 
-    public List<StockLevelResponseDTO> findAllStockLevels() {
-        return stockLevelRepository.findAll().stream().map(stockLevelMapper::toStockLevelDTO).toList();
+    public List<StockLevelResponseDTO> findAllStockLevels(Long locationId) {
+        List<StockLevel> levels = locationId == null ? stockLevelRepository.findAll()
+                : stockLevelRepository.findByLocation_Id(locationId);
+        return levels.stream().map(stockLevelMapper::toStockLevelDTO).toList();
     }
 
-    public StockLevelResponseDTO saveStockLevel(StockLevelRequestDTO stockLevelDTO) {
-        StockLevel stockLevel = stockLevelMapper.toStockLevel(stockLevelDTO);
-        setRelationshipsAndId(stockLevel, stockLevelDTO);
-        return stockLevelMapper.toStockLevelDTO(stockLevelRepository.save(stockLevel));
+    public List<StockLevelResponseDTO> findStockLevelsByProduct(Long productId) {
+        return stockLevelRepository.findByProduct_Id(productId).stream()
+                .map(stockLevelMapper::toStockLevelDTO).toList();
     }
 
-    public StockLevelResponseDTO updateStockLevel(Long productId, Long locationId, Integer quantity, TransactionType transactionType) {
-        Optional<StockLevel> existingStockLevel = stockLevelRepository.findById(new StockLevelId(productId, locationId));
-        
-        if(existingStockLevel.isEmpty()){
-            if(transactionType == TransactionType.STOCK_OUT || transactionType == TransactionType.STOCK_ADJUSTMENT) {
-                throw new InvalidTransactionType("Invalid transaction type for non-existing stock level for productId: " + productId + " at locationId: " + locationId);
+    /** Applies one movement inside the transaction opened by InventoryTransactionService. */
+    public StockLevel applyMovement(Product product, Location location, Integer quantity, TransactionType type) {
+        validateMovement(quantity, type);
+        StockLevelId id = new StockLevelId(product.getId(), location.getId());
+        StockLevel stockLevel = stockLevelRepository.findByIdForUpdate(id).orElse(null);
+
+        if (stockLevel == null) {
+            if (type != TransactionType.STOCK_IN) {
+                throw new InvalidTransactionType("Only STOCK_IN can create stock for productId: " + product.getId()
+                        + " at locationId: " + location.getId());
             }
-
-            StockLevel newStockLevel = new StockLevel();
-            newStockLevel.setId(new StockLevelId(productId, locationId));
-            newStockLevel.setQuantity(quantity);
-            newStockLevel.setTransactionType(transactionType);
-            StockLevelRequestDTO requestDTO = new StockLevelRequestDTO();
-            requestDTO.setProductId(productId);
-            requestDTO.setLocationId(locationId);
-            requestDTO.setQuantity(quantity);
-            requestDTO.setTransactionType(transactionType);
-            setRelationshipsAndId(newStockLevel, requestDTO);
-            newStockLevel.setLastUpdated(java.time.LocalDateTime.now());
-            return stockLevelMapper.toStockLevelDTO(stockLevelRepository.save(newStockLevel));
-        }
-
-        StockLevel stockLevel = existingStockLevel.get();
-        if(quantity == null) {
-            throw new InvalidQuantity("Quantity cannot be null for productId: " + productId + " at locationId: " + locationId);
-        }
-
-        if(transactionType == TransactionType.STOCK_IN) {
-            if(quantity < 0) {
-                throw new InvalidQuantity("Resulting stock level cannot be negative for productId: " + productId + " at locationId: " + locationId);
-            }
+            stockLevel = new StockLevel();
+            stockLevel.setId(id);
+            stockLevel.setProduct(product);
+            stockLevel.setLocation(location);
+            stockLevel.setQuantity(quantity);
+        } else if (type == TransactionType.STOCK_IN) {
             stockLevel.setQuantity(stockLevel.getQuantity() + quantity);
-        } else if(transactionType == TransactionType.STOCK_OUT) {
-            if(stockLevel.getQuantity() == null || stockLevel.getQuantity() < quantity) {
-                throw new InsufficientStock("Insufficient stock for productId: " + productId + " at locationId: " + locationId);
+        } else if (type == TransactionType.STOCK_OUT) {
+            if (stockLevel.getQuantity() < quantity) {
+                throw new InsufficientStock("Insufficient stock for productId: " + product.getId()
+                        + " at locationId: " + location.getId());
             }
             stockLevel.setQuantity(stockLevel.getQuantity() - quantity);
-        }else if(transactionType == TransactionType.STOCK_ADJUSTMENT) {
-            if(quantity < 0) {
-                throw new InvalidQuantity("Resulting stock level cannot be negative for productId: " + productId + " at locationId: " + locationId);
-            }
+        } else { // An adjustment is an absolute count, not a delta.
             stockLevel.setQuantity(quantity);
         }
-        
-        stockLevel.setTransactionType(transactionType);
-        stockLevel.setLastUpdated(java.time.LocalDateTime.now());
-        return stockLevelMapper.toStockLevelDTO(stockLevelRepository.save(stockLevel));
+
+        stockLevel.setTransactionType(type);
+        stockLevel.setLastUpdated(LocalDateTime.now());
+        return stockLevelRepository.save(stockLevel);
     }
 
-    public void deleteStockLevel(Long productId, Long locationId) {
-        StockLevelId id = new StockLevelId(productId, locationId);
-        if (!stockLevelRepository.existsById(id)) {
-            throw new StockLevelIdNotFound("Stock level not found");
+    private void validateMovement(Integer quantity, TransactionType type) {
+        if (quantity == null || quantity <= 0) {
+            throw new InvalidQuantity("quantity must be greater than zero");
         }
-        stockLevelRepository.deleteById(id);
-    }
-
-    private void setRelationshipsAndId(StockLevel stockLevel, StockLevelRequestDTO dto) {
-        Product product = productRepository.findById(dto.getProductId())
-                .orElseThrow(() -> new ProductNotFound("Product not found with id: " + dto.getProductId()));
-        Location location = locationRepository.findById(dto.getLocationId())
-                .orElseThrow(() -> new LocationNotFound("Location not found with id: " + dto.getLocationId()));
-        stockLevel.setId(new StockLevelId(dto.getProductId(), dto.getLocationId()));
-        stockLevel.setProduct(product);
-        stockLevel.setLocation(location);
+        if (type == null) {
+            throw new InvalidTransactionType("transactionType is required");
+        }
     }
 }
