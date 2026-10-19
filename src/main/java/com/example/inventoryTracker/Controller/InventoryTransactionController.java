@@ -1,5 +1,7 @@
 package com.example.inventoryTracker.Controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +23,7 @@ import com.example.inventoryTracker.Service.InventoryTransactionService;
 import jakarta.validation.Valid;
 
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public class InventoryTransactionController {
     private final InventoryTransactionService inventoryTransactionService;
 

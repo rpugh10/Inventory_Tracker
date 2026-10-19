@@ -18,7 +18,10 @@ import com.example.inventoryTracker.DTO.ResponseDTOS.StockLevelResponseDTO;
 import com.example.inventoryTracker.Service.ProductService;
 import com.example.inventoryTracker.Service.StockLevelService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public class ProductController {
     private final ProductService productService;
     private final StockLevelService stockLevelService;

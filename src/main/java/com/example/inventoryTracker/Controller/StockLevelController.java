@@ -1,5 +1,7 @@
 package com.example.inventoryTracker.Controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import com.example.inventoryTracker.Service.StockLevelService;
 
 /** Current stock snapshot endpoints. Stock mutations happen only through inventory transactions. */
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public class StockLevelController {
     private final StockLevelService stockLevelService;
 

@@ -1,5 +1,7 @@
 package com.example.inventoryTracker.Controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import com.example.inventoryTracker.DTO.ResponseDTOS.LocationResponseDTO;
 import com.example.inventoryTracker.Service.LocationService;
 
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 public class LocationController {
 
     private final LocationService locationService;
