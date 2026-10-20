@@ -72,3 +72,8 @@ builds or rebuilds Docker images for any services defined in your compose.yaml
 
  18. mvn clean package -DskipTests
 This builds a JAR while skipping the tests
+
+19. Running the application with Docker
+Building the application JAR .\mvnw.cmd clean package -DskipTests
+Start PostgreSQL docker compose up -d postgres. Logs docker compose logs -f postgres
+Start application container docker compose up -d --build app. Logs docker compose logs -f app

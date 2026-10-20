@@ -1,4 +1,5 @@
 package com.example.inventoryTracker.Config;
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,6 +32,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS)) // Set session management to stateless
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add the JWT authentication filter before the UsernamePasswordAuthenticationFilter
             .authorizeHttpRequests(auth -> auth
+                .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
                 .requestMatchers(
                 "/auth/login", 
                 "/register",
