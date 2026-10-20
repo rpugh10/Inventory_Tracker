@@ -13,10 +13,10 @@ public interface InventoryTransactionRepository extends JpaRepository<InventoryT
 
     @Query("""
             SELECT t FROM InventoryTransaction t
-            WHERE (:productId IS NULL OR t.product.id = :productId)
-              AND (:locationId IS NULL OR t.location.id = :locationId)
-              AND (:from IS NULL OR t.transactionDate >= :from)
-              AND (:to IS NULL OR t.transactionDate <= :to)
+            WHERE (cast(:productId as Long) IS NULL OR t.product.id = :productId)
+              AND (cast(:locationId as Long) IS NULL OR t.location.id = :locationId)
+              AND (cast(:from as LocalDateTime) IS NULL OR t.transactionDate >= :from)
+              AND (cast(:to as LocalDateTime) IS NULL OR t.transactionDate <= :to)
             ORDER BY t.transactionDate DESC
             """)
     List<InventoryTransaction> findByFilters(
